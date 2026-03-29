@@ -1,0 +1,3 @@
+flows:
+  - Andtroid_tests/*.yaml
+  - iOS_tests/*.yaml

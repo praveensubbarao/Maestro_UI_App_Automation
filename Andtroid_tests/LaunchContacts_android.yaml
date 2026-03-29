@@ -1,4 +1,8 @@
 appId: com.google.android.contacts
+tags:
+  - contacts
+  - android
+  - smokeTest
 ---
 - launchApp:
     clearState: true
