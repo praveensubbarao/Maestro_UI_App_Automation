@@ -1,0 +1,32 @@
+appId: com.apple.MobileAddressBook
+---
+- launchApp:
+    clearState: false
+- tapOn:
+    text: "All iPhone"
+- tapOn:
+    text: "Add"
+- tapOn:
+    text: "First name"
+- inputText: ${faker.name().firstName()}
+- tapOn:
+    text: "Last name"
+- inputText: ${faker.name().lastName()}
+- tapOn:
+    text: "Done"
+- takeScreenshot: "LoginScreen-shard_${MAESTRO_SHARD_INDEX}-device_${MAESTRO_DEVICE_UDID}.png"
+- tapOn:
+    text: "Edit"
+- repeat:
+    times: 3
+    commands:
+      - scroll
+- tapOn:
+    text: "Delete Contact"
+- tapOn:
+    text: "Delete Contact"
+- assertVisible:
+    text: "Lists"
+- tapOn:
+    text: "Lists"
+- stopApp

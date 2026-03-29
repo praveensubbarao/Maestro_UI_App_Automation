@@ -1,0 +1,22 @@
+appId: com.google.android.contacts
+---
+- launchApp:
+    clearState: true
+
+- tapOn:
+    id: floating_action_button
+    enabled: true
+- tapOn:
+    text: "First name"
+- inputText: ${faker.name().firstName()}
+- tapOn:
+    text: "Last name"
+- inputText: ${faker.name().lastName()}
+- tapOn:
+    text: "Save"
+- takeScreenshot: "LoginScreen-shard_${MAESTRO_SHARD_INDEX}-device_${MAESTRO_DEVICE_UDID}.png"
+- tapOn:
+    text: "Delete"
+- tapOn:
+    text: "Delete"
+- stopApp
