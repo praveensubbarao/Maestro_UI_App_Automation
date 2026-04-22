@@ -1,0 +1,30 @@
+appId: com.apple.MobileAddressBook
+tags:
+  - contacts
+  - ios
+  - navigation
+---
+- stopApp
+- launchApp:
+    clearState: false
+- repeat:
+    times: 5
+    while:
+      notVisible:
+        text: "All iPhone"
+    commands:
+      - tapOn:
+          point: "5%, 7%"
+      - waitForAnimationToEnd
+- tapOn:
+    text: "Back"
+- waitForAnimationToEnd
+- tapOn:
+    text: "Friends"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Friends"
+- assertVisible:
+    text: "Daniel Higgins Jr."
+- takeScreenshot: "NavigateFriendsList-${new Date().toISOString().replace(/[:.]/g, '-')}.png"
+- stopApp

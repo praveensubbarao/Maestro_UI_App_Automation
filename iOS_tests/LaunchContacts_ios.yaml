@@ -4,8 +4,18 @@ tags:
   - ios
   - smokeTest
 ---
+- stopApp
 - launchApp:
     clearState: false
+- repeat:
+    times: 5
+    while:
+      notVisible:
+        text: "All iPhone"
+    commands:
+      - tapOn:
+          point: "5%, 7%"
+      - waitForAnimationToEnd
 - tapOn:
     text: "All iPhone"
 - tapOn:
@@ -18,7 +28,7 @@ tags:
 - inputText: ${faker.name().lastName()}
 - tapOn:
     text: "Done"
-- takeScreenshot: "LoginScreen-shard_${MAESTRO_SHARD_INDEX}-device_${MAESTRO_DEVICE_UDID}.png"
+- takeScreenshot: "LoginScreen-shard_${MAESTRO_SHARD_INDEX}-${new Date().toISOString().replace(/[:.]/g, '-')}.png"
 - tapOn:
     text: "Edit"
 - repeat:

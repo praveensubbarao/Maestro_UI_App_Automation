@@ -1,0 +1,37 @@
+appId: com.apple.MobileAddressBook
+tags:
+  - contacts
+  - ios
+  - lists
+---
+- stopApp
+- launchApp:
+    clearState: false
+- repeat:
+    times: 5
+    while:
+      notVisible:
+        text: "All iPhone"
+    commands:
+      - tapOn:
+          point: "5%, 7%"
+      - waitForAnimationToEnd
+- tapOn:
+    text: "Back"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Lists"
+- tapOn:
+    text: "Add List"
+- assertVisible:
+    text: "List Name"
+- takeScreenshot: "AddList-prompt-${new Date().toISOString().replace(/[:.]/g, '-')}.png"
+- tapOn:
+    text: "Clear text"
+- inputText: "Maestro Test List"
+- pressKey: Return
+- waitForAnimationToEnd
+- assertVisible:
+    text: "Maestro Test List"
+- takeScreenshot: "AddList-created-${new Date().toISOString().replace(/[:.]/g, '-')}.png"
+- stopApp

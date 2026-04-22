@@ -1,0 +1,41 @@
+appId: com.apple.MobileAddressBook
+tags:
+  - contacts
+  - ios
+  - detail
+---
+- stopApp
+- launchApp:
+    clearState: false
+- repeat:
+    times: 5
+    while:
+      notVisible:
+        text: "All iPhone"
+    commands:
+      - tapOn:
+          point: "5%, 7%"
+      - waitForAnimationToEnd
+- tapOn:
+    text: "John Appleseed"
+- assertVisible:
+    text: "John Appleseed"
+- assertVisible:
+    text: "Edit"
+- assertVisible:
+    text: "mobile"
+- assertVisible:
+    text: "(888) 555-5512"
+- scroll
+- assertVisible:
+    text: "Send Message"
+- assertVisible:
+    text: "Share Contact"
+- assertVisible:
+    text: "Add to Favorites"
+- assertVisible:
+    text: "Add to List"
+- assertVisible:
+    text: "Block Contact"
+- takeScreenshot: "ViewContactDetail-${new Date().toISOString().replace(/[:.]/g, '-')}.png"
+- stopApp
