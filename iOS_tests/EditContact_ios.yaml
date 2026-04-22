@@ -1,0 +1,37 @@
+appId: com.apple.MobileAddressBook
+tags:
+  - contacts
+  - ios
+  - edit
+---
+- stopApp
+- launchApp:
+    clearState: false
+- repeat:
+    times: 5
+    while:
+      notVisible:
+        text: "All iPhone"
+    commands:
+      - tapOn:
+          point: "5%, 7%"
+      - waitForAnimationToEnd
+- tapOn:
+    text: "Kate Bell"
+- assertVisible:
+    text: "Edit"
+- tapOn:
+    text: "Edit"
+- assertVisible:
+    text: "Kate"
+- assertVisible:
+    text: "Bell"
+- assertVisible:
+    text: "add phone"
+- assertVisible:
+    text: "add email"
+- takeScreenshot: "EditContact-${new Date().toISOString().replace(/[:.]/g, '-')}.png"
+- tapOn:
+    point: "5%, 5%"
+- waitForAnimationToEnd
+- stopApp

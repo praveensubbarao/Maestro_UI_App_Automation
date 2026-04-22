@@ -1,0 +1,25 @@
+appId: com.apple.MobileAddressBook
+tags:
+  - contacts
+  - ios
+  - search
+---
+- stopApp
+- launchApp:
+    clearState: false
+- repeat:
+    times: 5
+    while:
+      notVisible:
+        text: "All iPhone"
+    commands:
+      - tapOn:
+          point: "5%, 7%"
+      - waitForAnimationToEnd
+- tapOn:
+    text: "Search"
+- inputText: "Taylor"
+- assertVisible:
+    text: "Taylor"
+- takeScreenshot: "SearchContacts-Taylor-${new Date().toISOString().replace(/[:.]/g, '-')}.png"
+- stopApp

@@ -1,0 +1,32 @@
+appId: com.apple.MobileAddressBook
+tags:
+  - contacts
+  - ios
+  - navigation
+---
+- stopApp
+- launchApp:
+    clearState: false
+- repeat:
+    times: 5
+    while:
+      notVisible:
+        text: "All iPhone"
+    commands:
+      - tapOn:
+          point: "5%, 7%"
+      - waitForAnimationToEnd
+- tapOn:
+    text: "Back"
+- waitForAnimationToEnd
+- tapOn:
+    text: "Work"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "No Contacts"
+- assertVisible:
+    text: "Contacts you've added will appear here."
+- assertVisible:
+    text: "Add Contacts"
+- takeScreenshot: "EmptyListState-Work-${new Date().toISOString().replace(/[:.]/g, '-')}.png"
+- stopApp

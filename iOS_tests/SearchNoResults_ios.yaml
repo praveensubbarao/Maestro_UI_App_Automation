@@ -1,0 +1,27 @@
+appId: com.apple.MobileAddressBook
+tags:
+  - contacts
+  - ios
+  - search
+---
+- stopApp
+- launchApp:
+    clearState: false
+- repeat:
+    times: 5
+    while:
+      notVisible:
+        text: "All iPhone"
+    commands:
+      - tapOn:
+          point: "5%, 7%"
+      - waitForAnimationToEnd
+- tapOn:
+    text: "Search"
+- inputText: "ZZZNORESULT"
+- assertVisible:
+    text: "No Results for"
+- assertVisible:
+    text: "Check the spelling or try a new search."
+- takeScreenshot: "SearchNoResults-${new Date().toISOString().replace(/[:.]/g, '-')}.png"
+- stopApp
