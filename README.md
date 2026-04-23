@@ -386,4 +386,4 @@ Screenshots are saved to `.maestro/screenshots/`.
 
 ## License
 
-[MIT](LICENSE) © 2026 Praveen Tendulkar
+[MIT](LICENSE) © 2026 Praveen Subbarao
