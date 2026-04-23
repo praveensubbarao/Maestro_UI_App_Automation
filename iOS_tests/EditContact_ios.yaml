@@ -4,18 +4,7 @@ tags:
   - ios
   - edit
 ---
-- stopApp
-- launchApp:
-    clearState: false
-- repeat:
-    times: 5
-    while:
-      notVisible:
-        text: "All iPhone"
-    commands:
-      - tapOn:
-          point: "5%, 7%"
-      - waitForAnimationToEnd
+- runFlow: _resetToHome_ios.yaml
 - tapOn:
     text: "Kate Bell"
 - assertVisible:
@@ -32,6 +21,10 @@ tags:
     text: "add email"
 - takeScreenshot: "EditContact-${new Date().toISOString().replace(/[:.]/g, '-')}.png"
 - tapOn:
-    point: "5%, 5%"
+    text: "Back"
+    optional: true
+- tapOn:
+    text: "Lists"
+    optional: true
 - waitForAnimationToEnd
 - stopApp

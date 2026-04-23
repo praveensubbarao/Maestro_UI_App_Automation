@@ -229,6 +229,19 @@ maestro list-devices
 
 ## Learnings
 
+### Maestro Cloud — do not select an App binary for system apps
+When running a Cloud Run in the Maestro UI, the **App** dropdown defaults to a recently-used value. If `com.apple.MobileAddressBook` (or any system app) is selected, Maestro Cloud attempts to install that binary onto the cloud device — which iOS rejects:
+```
+Rejecting downgrade of system/internal app com.apple.MobileAddressBook
+Unable to Install "Contacts"
+```
+**Fix:** Leave the App field empty in the Cloud Run dialog. The `appId: com.apple.MobileAddressBook` in the YAML is sufficient — it tells Maestro which app to interact with. The App field is only for custom `.ipa` binaries that need to be installed; system apps are already present on the device.
+
+If the UI does not allow clearing the selection, use the CLI instead and omit `--app-file`:
+```sh
+maestro test iOS_tests/SearchContacts_ios.yaml
+```
+
 ### iOS system apps cannot be reinstalled
 `clearState: true` works by uninstalling and reinstalling the app. iOS Simulators block uninstallation of core system apps like Contacts (`Uninstall prohibited — error code 22`). Always use `clearState: false` for `com.apple.MobileAddressBook`. Kill and relaunch with `stopApp` + `launchApp` instead to reset navigation state without touching data.
 

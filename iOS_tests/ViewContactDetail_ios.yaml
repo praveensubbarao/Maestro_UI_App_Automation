@@ -4,18 +4,7 @@ tags:
   - ios
   - detail
 ---
-- stopApp
-- launchApp:
-    clearState: false
-- repeat:
-    times: 5
-    while:
-      notVisible:
-        text: "All iPhone"
-    commands:
-      - tapOn:
-          point: "5%, 7%"
-      - waitForAnimationToEnd
+- runFlow: _resetToHome_ios.yaml
 - tapOn:
     text: "John Appleseed"
 - assertVisible:
