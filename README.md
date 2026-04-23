@@ -1,5 +1,7 @@
 ## Maestro UI App Automation
 
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+
 Mobile UI test automation for iOS and Android using [Maestro](https://maestro.mobile.dev) — a declarative YAML-based testing framework.
 
 ---
@@ -374,7 +376,14 @@ Tapping elements by text that contain `+` fails because Maestro treats the value
 Screenshots are saved to `.maestro/screenshots/`.
 
 ### YAML syntax rules
+
 - Every command after `---` must start with a `-` (dash).
 - `repeat:`, `commands:`, and other block keys require a colon and correct indentation.
 - Quote text values that contain spaces or special characters: `text: "All iPhone"`.
 - `stopApp` takes no parameters — no colon needed when used standalone.
+
+---
+
+## License
+
+[MIT](LICENSE) © 2026 Praveen Tendulkar
