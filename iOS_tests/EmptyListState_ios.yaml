@@ -4,20 +4,13 @@ tags:
   - ios
   - navigation
 ---
-- stopApp
-- launchApp:
-    clearState: false
-- repeat:
-    times: 5
-    while:
-      notVisible:
-        text: "All iPhone"
-    commands:
-      - tapOn:
-          point: "5%, 7%"
-      - waitForAnimationToEnd
+- runFlow: _resetToHome_ios.yaml
 - tapOn:
     text: "Back"
+    optional: true
+- tapOn:
+    text: "Lists"
+    optional: true
 - waitForAnimationToEnd
 - tapOn:
     text: "Work"
