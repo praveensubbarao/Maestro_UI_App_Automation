@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(maestro test*)",
+      "Bash(maestro list-devices)",
+      "Bash(maestro list-cloud-devices)",
+      "Bash(maestro --version)",
+      "Bash(maestro --udid*)",
+      "Bash(maestro cloud*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/validate_ios_flow.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
