@@ -26,11 +26,20 @@ Mobile UI test automation for iOS and Android using [Maestro](https://maestro.mo
 
 ```
 Maestro_UI_App_Automation/
+├── CLAUDE.md                     # Claude Code project rules (auto-loaded every session)
 ├── config.yaml                   # Workspace config — registers all test suites
 ├── start_maestro_mcp.sh          # Startup script for Maestro MCP server
+├── .claude/
+│   ├── settings.json             # Permissions + PostToolUse validation hook
+│   ├── commands/
+│   │   ├── new-ios-flow.md       # /new-ios-flow slash command
+│   │   └── validate-flows.md     # /validate-flows slash command
+│   └── hooks/
+│       └── validate_ios_flow.sh  # Hook script — validates iOS YAML on every write
 ├── .vscode/
 │   └── mcp.json                  # VSCode MCP server config (points to start script)
 ├── iOS_tests/                    # iOS test flows (iPhone Simulator)
+│   ├── _resetToHome_ios.yaml     # Shared setup helper — referenced by all iOS flows
 │   ├── LaunchContacts_ios.yaml
 │   ├── SearchContacts_ios.yaml
 │   ├── SearchPartialMatch_ios.yaml
@@ -76,12 +85,74 @@ Wires the MCP server into VSCode so it auto-starts when the workspace opens. Use
 
 ---
 
+## Claude Code Setup
+
+Claude Code is configured at the project level via `.claude/` to enforce test-writing conventions, reduce repetitive prompting, and catch mistakes automatically.
+
+### `CLAUDE.md`
+Loaded automatically at the start of every Claude Code session. Documents all iOS/Android test rules, naming conventions, the Maestro Cloud constraint, and common mistakes so Claude has full context without needing to be told again.
+
+### Slash Commands
+
+#### `/new-ios-flow`
+Scaffolds a new iOS test flow. Prompts for test name, tags, and scenario, then generates `iOS_tests/<TestName>_ios.yaml` with all constraints pre-applied:
+- Correct `appId` and `tags` header
+- `- runFlow: _resetToHome_ios.yaml` as the first command
+- Back navigation using the `optional: true` pair
+- JS timestamp screenshot
+- `- stopApp` at the end
+
+Also appends a one-line entry to the README iOS Tests section automatically.
+
+#### `/validate-flows`
+Audits all YAML files in `iOS_tests/` and `Andtroid_tests/` and reports violations in a table:
+
+| Check | What it catches |
+|---|---|
+| `runFlow: _resetToHome_ios.yaml` present | Flow missing shared setup |
+| `clearState: true` absent | Forbidden on iOS system apps |
+| `point:` coordinates absent | Should use text labels + `optional: true` |
+| `stopApp` at end | Missing teardown |
+| JS timestamp in screenshot | `MAESTRO_DEVICE_UDID` resolves to `undefined` |
+
+### Hook — PostToolUse validation
+
+Defined in `.claude/settings.json`, runs `.claude/hooks/validate_ios_flow.sh` automatically after every file write or edit. For any iOS test YAML (excluding `_resetToHome_ios.yaml`), it checks:
+
+- Missing `- runFlow: _resetToHome_ios.yaml`
+- `clearState: true` present (forbidden)
+- `point:` coordinates used for back navigation
+- Missing `- stopApp`
+- `MAESTRO_DEVICE_UDID` used in screenshot names
+
+Violations are printed inline as warnings immediately after the file is saved — no need to run tests to discover structural errors.
+
+### Permissions
+
+Pre-approved in `.claude/settings.json` so Claude can run these without prompting:
+
+```
+maestro test *
+maestro list-devices
+maestro list-cloud-devices
+maestro --version
+maestro --udid *
+maestro cloud *
+```
+
+---
+
 ## iOS Tests
 
 Target app: `com.apple.MobileAddressBook` (iOS Contacts)
 Device: iPhone Simulator (tested on iPhone 17 Pro — iOS 26.4)
 
-Every flow starts with:
+Every flow starts with a reference to the shared reset helper:
+```yaml
+- runFlow: _resetToHome_ios.yaml
+```
+
+`_resetToHome_ios.yaml` kills any running instance, cold-starts the app without clearing data, and navigates back to the `All iPhone` contacts list regardless of where the app was left by the previous test:
 ```yaml
 - stopApp
 - launchApp:
@@ -93,10 +164,13 @@ Every flow starts with:
         text: "All iPhone"
     commands:
       - tapOn:
-          point: "5%, 7%"
+          text: "Back"
+          optional: true
+      - tapOn:
+          text: "Lists"
+          optional: true
       - waitForAnimationToEnd
 ```
-This kills any running instance, cold-starts the app, and navigates back to the `All iPhone` contacts list if the app resumes in a nested screen.
 
 ---
 
@@ -258,12 +332,25 @@ Maestro has no standalone `while:` command. Conditional looping requires `repeat
         text: "All iPhone"
     commands:
       - tapOn:
-          point: "5%, 7%"
+          text: "Back"
+          optional: true
+      - tapOn:
+          text: "Lists"
+          optional: true
       - waitForAnimationToEnd
 ```
 
 ### Navigation back-button label changes by context
-The back button accessibility label is not always `"Back"`. From the `All iPhone` contacts list it is `"Lists"` (the parent screen name). From the `Work` or `Friends` list it is `"Back"`. Use `tapOn: point: "5%, 7%"` for reliable back navigation that works regardless of label.
+The back button accessibility label is not always `"Back"`. From the `All iPhone` contacts list it is `"Lists"` (the parent screen name). From the `Work` or `Friends` list it is `"Back"`. Use `optional: true` on both labels so whichever is present gets tapped and the other is silently skipped:
+```yaml
+- tapOn:
+    text: "Back"
+    optional: true
+- tapOn:
+    text: "Lists"
+    optional: true
+- waitForAnimationToEnd
+```
 
 ### `clearText` and `pressKey: Delete` are invalid
 Neither `clearText` nor `pressKey: Delete` exist in Maestro. To clear a search field, tap the `Clear text` button that appears in the search bar:
